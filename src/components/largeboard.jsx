@@ -5,7 +5,7 @@ function Largeboard() {
   let largeDimension = 3;
   let initialState = Array(largeDimension)
     .fill(0)
-    .map((e) => Array(largeDimension).fill('😈'));
+    .map((e) => Array(largeDimension).fill('💀'));
 
   const [lbState, setLbState] = useState(initialState);
   const [currentPlayer, setCurrentPlayer] = useState('X');
@@ -22,6 +22,7 @@ function Largeboard() {
       mbLayout[i].push(
         <Miniboard
           key={`mb${i}${j}`}
+          currentPlayer
           className="miniboard"
           miniboardID={i + j}
           marker={lbState[i][j]}
@@ -31,7 +32,7 @@ function Largeboard() {
     }
   }
 
-  return <>{mbLayout}</>;
+  return <div className="largeBoardHolder">{mbLayout}</div>;
 }
 
 export default Largeboard;

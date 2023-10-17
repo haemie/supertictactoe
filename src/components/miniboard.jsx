@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Box from './box';
 
-function Miniboard() {
+function Miniboard({ currentPlayer, marker, handleWin }) {
   let miniDimension = 3;
   let initialState = Array(miniDimension)
     .fill(0)
@@ -12,6 +12,7 @@ function Miniboard() {
   function handleClick(row, col) {
     mbState[row][col] = currentPlayer;
     setMbState([...mbState]);
+    console.log(mbState);
   }
 
   let boxLayout = Array(miniDimension);
@@ -23,7 +24,7 @@ function Miniboard() {
           key={`box${i}${j}`}
           className="box"
           boxID={i + j}
-          marker={boxLayout[i][j]}
+          marker={mbState[i][j]}
           handleClick={() => handleClick(i, j)}
         />
       );
