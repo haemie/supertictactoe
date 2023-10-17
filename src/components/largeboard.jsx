@@ -22,7 +22,8 @@ function Largeboard() {
       mbLayout[i].push(
         <Miniboard
           key={`mb${i}${j}`}
-          currentPlayer
+          currentPlayer={currentPlayer}
+          setCurrentPlayer={setCurrentPlayer}
           className="miniboard"
           miniboardID={i + j}
           marker={lbState[i][j]}
@@ -32,7 +33,7 @@ function Largeboard() {
     }
   }
 
-  return <div className="largeBoardHolder">{mbLayout}</div>;
+  return <div className="largeBoard">{mbLayout}</div>;
 }
 
 export default Largeboard;

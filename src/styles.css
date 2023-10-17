@@ -1,13 +1,27 @@
 .box {
-  height: 5rem;
-  width: 5rem;
+  font-size: 4vw;
+  height: 8vw;
+  width: 8vw;
 }
 
 body {
-  background-color: yellowgreen;
+  background-color: rgb(146, 184, 255);
 }
 
-.largeBoardHolder {
+.largeBoard {
   display:grid;
-  
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:1em;
+  width: 85vw;
+  height: 85vw;
+}
+
+.miniBoard {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+}
+
+.miniBoard:hover {
+  background-color: rgb(177, 204, 255);
 }

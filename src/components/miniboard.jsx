@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Box from './box';
 
-function Miniboard({ currentPlayer, marker, handleWin }) {
+function Miniboard({ currentPlayer, setCurrentPlayer, marker, handleWin }) {
   let miniDimension = 3;
   let initialState = Array(miniDimension)
     .fill(0)
-    .map((e) => Array(miniDimension).fill('😀'));
+    .map((e) => Array(miniDimension).fill(''));
 
   const [mbState, setMbState] = useState(initialState);
 
   function handleClick(row, col) {
     mbState[row][col] = currentPlayer;
     setMbState([...mbState]);
-    console.log(mbState);
+    console.log(currentPlayer);
+    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
   }
 
   let boxLayout = Array(miniDimension);
@@ -31,7 +32,7 @@ function Miniboard({ currentPlayer, marker, handleWin }) {
     }
   }
 
-  return <>{boxLayout}</>;
+  return <div className="miniBoard">{boxLayout}</div>;
 }
 
 export default Miniboard;
