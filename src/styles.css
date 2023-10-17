@@ -9,19 +9,21 @@ body {
 }
 
 .largeBoard {
+  background-color: black;
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap:1em;
+  gap:0em;
   width: 85vw;
   height: 85vw;
 }
 
 .miniBoard {
+  padding: 0.5em;
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 1em;
 }
 
 .miniBoard:hover {
-  background-color: rgb(177, 204, 255);
+  background-color: rgb(99, 154, 255);
 }
