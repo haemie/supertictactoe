@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import miniboard from './miniboard';
+import Miniboard from './miniboard';
 
-function largeboard() {
+function Largeboard() {
   let largeDimension = 3;
   let initialState = Array(largeDimension)
     .fill(0)
-    .map((e) => Array(largeDimension).fill(''));
-
-  // for (let i = 0; i < largeDimension; i++) {
-  //   initialState.set(i, new Set());
-  // }
+    .map((e) => Array(largeDimension).fill('😈'));
 
   const [lbState, setLbState] = useState(initialState);
   const [currentPlayer, setCurrentPlayer] = useState('X');
 
   function handleMiniWin(row, col) {
     lbState[row][col] = currentPlayer;
+    setLbState([...lbState]);
   }
 
   let mbLayout = Array(largeDimension);
@@ -23,9 +20,11 @@ function largeboard() {
     mbLayout[i] = [];
     for (let j = 0; j < largeDimension; j++) {
       mbLayout[i].push(
-        <miniboard
+        <Miniboard
+          key={`mb${i}${j}`}
           className="miniboard"
           miniboardID={i + j}
+          marker={lbState[i][j]}
           handleWin={() => handleMiniWin(row, col)}
         />
       );
@@ -35,4 +34,4 @@ function largeboard() {
   return <>{mbLayout}</>;
 }
 
-export default largeboard;
+export default Largeboard;
