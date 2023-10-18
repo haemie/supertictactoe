@@ -11,7 +11,10 @@ function Largeboard() {
   const [currentPlayer, setCurrentPlayer] = useState('X');
   const [currentBoard, setCurrentBoard] = useState(null);
   const [focusBoard, setFocusBoard] = useState(null);
+  const [winner, setWinner] = useState(null);
+  const [restarting, setRestarting] = useState(false);
 
+  // function used by the miniboard to change the large board state when a mini board is won
   function handleMiniWin(row, col) {
     lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
     setLbState([...lbState]);
@@ -59,8 +62,9 @@ function Largeboard() {
         );
       } else {
         if (
-          !focusBoard ||
-          (focusBoard && focusBoard[0] === i && focusBoard[1] === j)
+          !winner &&
+          (!focusBoard ||
+            (focusBoard && focusBoard[0] === i && focusBoard[1] === j))
         ) {
           mbLayout[i].push(
             <Miniboard
@@ -95,6 +99,18 @@ function Largeboard() {
     }
   }
 
+  let currentTurnDiv = winner ? (
+    <h2>{winner} WINS!</h2>
+  ) : (
+    <h2>It is {currentPlayer}'s turn</h2>
+  );
+
+  let largeBoardDiv = restarting ? (
+    <div className="largeBoard"></div>
+  ) : (
+    <div className="largeBoard">{mbLayout}</div>
+  );
+
   useEffect(() => {
     if (currentBoard) {
       // console.log('current board', currentBoard);
@@ -111,10 +127,31 @@ function Largeboard() {
     }
   }, [currentBoard]);
 
+  useEffect(() => {
+    // check for any win states
+    const result = checkWin(lbState);
+    if (result) {
+      setWinner(result);
+    }
+  }, [lbState]);
+
   return (
     <>
-      <h2>CURRENT TURN {currentPlayer}</h2>
-      <div className="largeBoard">{mbLayout}</div>
+      {currentTurnDiv}
+      {largeBoardDiv}
+      <button
+        onClick={() => {
+          setLbState(initialState);
+          setCurrentBoard(null);
+          setWinner(null);
+          setCurrentPlayer('X');
+          setFocusBoard(null);
+          setRestarting(true);
+          setTimeout(() => setRestarting(false), 1);
+        }}
+      >
+        Restart!
+      </button>
     </>
   );
 }
