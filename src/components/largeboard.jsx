@@ -68,7 +68,7 @@ function Largeboard() {
         ) {
           mbLayout[i].push(
             <Miniboard
-              style={{ backgroundColor: 'blue' }}
+              style={{ backgroundColor: '#0268e6' }}
               key={`mb${i}${j}`}
               currentPlayer={currentPlayer}
               setCurrentPlayer={setCurrentPlayer}
@@ -85,7 +85,7 @@ function Largeboard() {
         } else {
           mbLayout[i].push(
             <Miniboard
-              style={{ backgroundColor: '#3258a8' }}
+              style={{ backgroundColor: '#7f7f7f' }}
               key={`mb${i}${j}`}
               className="miniBoard"
               miniboardID={[i, j]}

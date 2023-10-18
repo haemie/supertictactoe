@@ -22,7 +22,7 @@ body {
 }
 
 .largeBoard {
-  background-color: black;
+  background-color: clear;
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
