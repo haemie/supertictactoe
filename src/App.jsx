@@ -3,10 +3,10 @@ import Largeboard from './components/largeboard';
 
 function App() {
   return (
-    <>
-      super tic tac toe!
+    <div className="app">
+      <h1>super tic tac toe!</h1>
       <Largeboard></Largeboard>
-    </>
+    </div>
   );
 }
 

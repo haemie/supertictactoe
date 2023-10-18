@@ -13,56 +13,96 @@ function Largeboard() {
   const [focusBoard, setFocusBoard] = useState(null);
 
   function handleMiniWin(row, col) {
-    lbState[row][col] = currentPlayer;
+    lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
     setLbState([...lbState]);
+  }
+
+  // check for winstate in board
+  function checkWin(board) {
+    let winner;
+    for (let i = 0; i < board.length; i++) {
+      // check rows
+      if (new Set(board[i]).size === 1 && board[i][0] !== null) {
+        return board[i][0];
+      }
+      if (
+        new Set(board.map((row) => row[i])).size === 1 &&
+        board[0][i] !== null
+      ) {
+        return board[0][i];
+      }
+    }
+    if (
+      new Set(board.map((row, index) => row[index])).size === 1 &&
+      board[0][0] !== null
+    ) {
+      return board[0][0];
+    }
+    if (
+      new Set(board.map((row, index) => row[board.length - 1 - index])).size ===
+        1 &&
+      board[0][board.length - 1] !== null
+    ) {
+      return board[0][board.length - 1];
+    }
   }
 
   let mbLayout = Array(largeDimension);
   for (let i = 0; i < largeDimension; i++) {
     mbLayout[i] = [];
     for (let j = 0; j < largeDimension; j++) {
-      if (
-        !focusBoard ||
-        (focusBoard && focusBoard[0] === i && focusBoard[1] === j)
-      ) {
+      if (lbState[i][j]) {
         mbLayout[i].push(
-          <Miniboard
-            style={{ backgroundColor: 'red' }}
-            key={`mb${i}${j}`}
-            currentPlayer={currentPlayer}
-            setCurrentPlayer={setCurrentPlayer}
-            currentBoard={currentBoard}
-            setCurrentBoard={setCurrentBoard}
-            focused={true}
-            className="miniboard"
-            miniboardID={[i, j]}
-            marker={lbState[i][j]}
-            handleWin={() => handleMiniWin(row, col)}
-          />
+          <div className="filledMini" key={`filled${i}${j}`}>
+            {lbState[i][j]}
+          </div>
         );
       } else {
-        mbLayout[i].push(
-          <Miniboard
-            style={{ backgroundColor: 'blue' }}
-            key={`mb${i}${j}`}
-            className="miniboard"
-            miniboardID={[i, j]}
-            marker={lbState[i][j]}
-            focused={false}
-          />
-        );
+        if (
+          !focusBoard ||
+          (focusBoard && focusBoard[0] === i && focusBoard[1] === j)
+        ) {
+          mbLayout[i].push(
+            <Miniboard
+              style={{ backgroundColor: 'blue' }}
+              key={`mb${i}${j}`}
+              currentPlayer={currentPlayer}
+              setCurrentPlayer={setCurrentPlayer}
+              currentBoard={currentBoard}
+              setCurrentBoard={setCurrentBoard}
+              focused={true}
+              className="focusedBoard"
+              miniboardID={[i, j]}
+              marker={lbState[i][j]}
+              handleWin={() => handleMiniWin(i, j)}
+              checkWin={(b) => checkWin(b)}
+            />
+          );
+        } else {
+          mbLayout[i].push(
+            <Miniboard
+              style={{ backgroundColor: '#3258a8' }}
+              key={`mb${i}${j}`}
+              className="miniBoard"
+              miniboardID={[i, j]}
+              marker={lbState[i][j]}
+              focused={false}
+              checkWin={(b) => checkWin(b)}
+            />
+          );
+        }
       }
     }
   }
 
   useEffect(() => {
     if (currentBoard) {
-      console.log('current board', currentBoard);
-      console.log(
-        'state of current board',
-        lbState[currentBoard[0]][currentBoard[1]]
-      );
-      console.log('focused board', focusBoard);
+      // console.log('current board', currentBoard);
+      // console.log(
+      //   'state of current board',
+      //   lbState[currentBoard[0]][currentBoard[1]]
+      // );
+      // console.log('focused board', focusBoard);
       if (lbState[currentBoard[0]][currentBoard[1]]) {
         setFocusBoard(null);
       } else {
@@ -71,7 +111,12 @@ function Largeboard() {
     }
   }, [currentBoard]);
 
-  return <div className="largeBoard">{mbLayout}</div>;
+  return (
+    <>
+      <h2>CURRENT TURN {currentPlayer}</h2>
+      <div className="largeBoard">{mbLayout}</div>
+    </>
+  );
 }
 
 export default Largeboard;
