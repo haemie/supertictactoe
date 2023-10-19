@@ -14,7 +14,7 @@
 
 ## About The Project
 
-Super Tic Tac Toe game based on a [VSauce video](https://www.youtube.com/shorts/_Na3a1ZrX7c) I saw.
+Super Tic Tac Toe game made after I saw a [VSauce video](https://www.youtube.com/shorts/_Na3a1ZrX7c) on it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -35,14 +35,14 @@ To get a local copy up and running follow these simple example steps.
 
 - yarn
   ```sh
-  npm install -g yarn
+  npm install yarn -g
   ```
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/haemie/supertictactoe.git
    ```
 2. Install NPM packages
    ```sh
