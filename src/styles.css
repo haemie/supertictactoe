@@ -18,7 +18,15 @@
 }
 
 body {
-  background-color: rgb(146, 184, 255);
+  background-color: rgb(23, 14, 54);
+  font-family: 'Courier New', Courier, monospace;
+  color: aliceblue;
+}
+
+.largeBoard button {
+  background-color: black;
+  /* color: aliceblue; */
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .largeBoard {
@@ -60,7 +68,11 @@ body {
 
 .filledMini {
   padding: 0.5em;
-  background-color: white;
+  border-color: gray;
+  border-style: solid;
+  border-width: 0.1em;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
   justify-content: center;

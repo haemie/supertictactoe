@@ -56,7 +56,11 @@ function Largeboard() {
     for (let j = 0; j < largeDimension; j++) {
       if (lbState[i][j]) {
         mbLayout[i].push(
-          <div className="filledMini" key={`filled${i}${j}`}>
+          <div
+            className="filledMini"
+            key={`filled${i}${j}`}
+            style={lbState[i][j] === 'X' ? { color: 'red' } : { color: 'blue' }}
+          >
             {lbState[i][j]}
           </div>
         );

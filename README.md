@@ -56,7 +56,7 @@ To get a local copy up and running follow these simple example steps.
 ## Roadmap
 
 - [ ] option to change game dimensions
-- [ ] add specific colors for 'X' and 'O'
+- [x] add specific colors for 'X' and 'O'
 - [ ] general styling improvements
 - [ ] lift state out of components
 - [ ] add online multiplayer
