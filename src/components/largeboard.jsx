@@ -111,24 +111,6 @@ function Largeboard() {
     }
   }
 
-  /**
-   * div updates depending on game state
-   */
-  let currentTurnDiv = winner ? (
-    <h2>{winner} WINS!</h2>
-  ) : (
-    <h2>It is {currentPlayer}'s turn</h2>
-  );
-
-  /**
-   * conditionally render large board depending on whether restarting
-   */
-  let largeBoardDiv = restarting ? (
-    <div className="largeBoard"></div>
-  ) : (
-    <div className="largeBoard">{mbLayout}</div>
-  );
-
   useEffect(() => {
     if (currentBoard) {
       // console.log('current board', currentBoard);
@@ -158,26 +140,38 @@ function Largeboard() {
   /**
    * update cursor shape and position
    */
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const floaterRef = useRef();
-  useEffect(() => {
-    const moveFloater = (e) => {
-      // console.log(e);
-      const floater = floaterRef.current;
-      floater.style.left = e.clientX + 'px';
-      floater.style.top = e.clientY + 'px';
-    };
-    document.addEventListener('mousemove', moveFloater);
+  const [isHovered, setIsHovered] = useState(false);
+  const [floaterPosition, setFloaterPosition] = useState({ x: 0, y: 0 });
+  // useEffect(() => {
+  //   const moveFloater = (e) => {
+  //     // console.log(e);
 
-    return () => {
-      document.removeEventListener('mousemove', moveFloater);
-    };
-  }, []);
+  //     const floater = floaterRef.current;
+  //     floater.style.left = e.clientX - 20 + 'px';
+  //     floater.style.top = e.clientY - 30 + 'px';
+  //   };
+  //   document.addEventListener('mousemove', moveFloater);
+
+  //   return () => {
+  //     document.removeEventListener('mousemove', moveFloater);
+  //   };
+  // }, []);
 
   return (
     <>
-      {currentTurnDiv}
-      {largeBoardDiv}
+      <h2>{winner ? `${winner} WINS` : `It is ${currentPlayer}'s turn`}</h2>
+      <div
+        id="largeBoard"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onMouseMove={(e) => {
+          setFloaterPosition({ x: e.clientX - 15, y: e.clientY - 20 });
+        }}
+      >
+        {restarting ? null : mbLayout}
+      </div>
       <button
         onClick={() => {
           setLbState(initialState);
@@ -191,16 +185,20 @@ function Largeboard() {
       >
         Restart!
       </button>
-      <div
-        className="floater"
-        ref={floaterRef}
-        style={{
-          color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
-          fontSize: '6vw',
-        }}
-      >
-        {winner || currentPlayer}
-      </div>
+      {isHovered && (
+        <div
+          className="floater"
+          ref={floaterRef}
+          style={{
+            color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
+            fontSize: '6vw',
+            left: floaterPosition.x + 'px',
+            top: floaterPosition.y + 'px',
+          }}
+        >
+          {winner || currentPlayer}
+        </div>
+      )}
     </>
   );
 }
