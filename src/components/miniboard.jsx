@@ -25,11 +25,13 @@ function Miniboard({
   // when a box is clicked, assign the current player to the miniboard state, which updates the box marker, and update current player
 
   function handleClick(row, col) {
-    let newMiniState = [...miniState];
-    newMiniState[row][col] = currentPlayer;
-    setMiniState(newMiniState);
-    setCurrentBoard([row, col]);
-    setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+    if (!miniState[row][col]) {
+      let newMiniState = [...miniState];
+      newMiniState[row][col] = currentPlayer;
+      setMiniState(newMiniState);
+      setCurrentBoard([row, col]);
+      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+    }
   }
 
   let boxLayout = Array(dimension);
