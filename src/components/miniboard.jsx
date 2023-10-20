@@ -12,35 +12,37 @@ function Miniboard({
   handleWin,
   checkWin,
   miniboardID,
+  dimension,
+  miniState,
+  setMiniState,
 }) {
-  let miniDimension = 3;
-  let initialState = Array(miniDimension)
+  let initialState = Array(dimension)
     .fill(0)
-    .map((e) => Array(miniDimension).fill(null));
+    .map((e) => Array(dimension).fill(null));
   // initial miniboard state with null values
 
-  const [mbState, setMbState] = useState(initialState);
-
+  // console.log(miniState);
   // when a box is clicked, assign the current player to the miniboard state, which updates the box marker, and update current player
 
   function handleClick(row, col) {
-    mbState[row][col] = currentPlayer;
-    setMbState([...mbState]);
+    let newMiniState = [...miniState];
+    newMiniState[row][col] = currentPlayer;
+    setMiniState(newMiniState);
     setCurrentBoard([row, col]);
     setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
   }
 
-  let boxLayout = Array(miniDimension);
-  for (let i = 0; i < miniDimension; i++) {
+  let boxLayout = Array(dimension);
+  for (let i = 0; i < dimension; i++) {
     boxLayout[i] = [];
-    for (let j = 0; j < miniDimension; j++) {
+    for (let j = 0; j < dimension; j++) {
       if (focused) {
         boxLayout[i].push(
           <Box
             key={`box${i}${j}`}
             className="box"
             boxID={[i, j]}
-            marker={mbState[i][j]}
+            marker={miniState[i][j]}
             handleClick={() => handleClick(i, j)}
           />
         );
@@ -50,7 +52,7 @@ function Miniboard({
             key={`box${i}${j}`}
             className="box"
             boxID={[i, j]}
-            marker={mbState[i][j]}
+            marker={miniState[i][j]}
           />
         );
       }
@@ -59,13 +61,19 @@ function Miniboard({
 
   useEffect(() => {
     // check for any win states
-    if (checkWin(mbState)) {
+    if (checkWin(miniState)) {
       handleWin(miniboardID[0], miniboardID[1]);
     }
-  }, [mbState]);
+  }, [miniState]);
 
   return (
-    <div className={className} style={style}>
+    <div
+      className={className}
+      style={{
+        ...style,
+        gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
+      }}
+    >
       {boxLayout}
     </div>
   );

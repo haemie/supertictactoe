@@ -2,11 +2,26 @@ import React, { useState, useEffect, useRef } from 'react';
 import Miniboard from './miniboard';
 
 function Largeboard() {
-  let largeDimension = 3;
-  let initialState = Array(largeDimension)
-    .fill(0)
-    .map((e) => Array(largeDimension).fill(null));
+  const [dimension, setDimension] = useState(3);
+  const [inputDimension, setInputDimension] = useState(3);
 
+  let initialState = Array(dimension)
+    .fill(0)
+    .map((e) => Array(dimension).fill(null));
+
+  let initialCompleteState = Array(dimension)
+    .fill(0)
+    .map((e) =>
+      Array(dimension)
+        .fill(0)
+        .map((e) =>
+          Array(dimension)
+            .fill(0)
+            .map((e) => Array(dimension).fill(null))
+        )
+    );
+
+  const [completeState, setCompleteState] = useState(initialCompleteState);
   const [lbState, setLbState] = useState(initialState);
   const [currentPlayer, setCurrentPlayer] = useState('X');
   const [currentBoard, setCurrentBoard] = useState(null);
@@ -58,10 +73,10 @@ function Largeboard() {
     }
   }
 
-  let mbLayout = Array(largeDimension);
-  for (let i = 0; i < largeDimension; i++) {
+  let mbLayout = Array(dimension);
+  for (let i = 0; i < dimension; i++) {
     mbLayout[i] = [];
-    for (let j = 0; j < largeDimension; j++) {
+    for (let j = 0; j < dimension; j++) {
       if (lbState[i][j]) {
         mbLayout[i].push(
           <div
@@ -92,6 +107,13 @@ function Largeboard() {
               marker={lbState[i][j]}
               handleWin={() => handleMiniWin(i, j)}
               checkWin={(b) => checkWin(b)}
+              dimension={dimension}
+              miniState={completeState[i][j]}
+              setMiniState={(newMiniState) => {
+                let newCompleteState = [...completeState];
+                newCompleteState[i][j] = newMiniState;
+                setCompleteState(newCompleteState);
+              }}
             />
           );
         } else {
@@ -104,6 +126,13 @@ function Largeboard() {
               marker={lbState[i][j]}
               focused={false}
               checkWin={(b) => checkWin(b)}
+              dimension={dimension}
+              miniState={completeState[i][j]}
+              setMiniState={(newMiniState) => {
+                let newCompleteState = [...completeState];
+                newCompleteState[i][j] = newMiniState;
+                setCompleteState(newCompleteState);
+              }}
             />
           );
         }
@@ -159,6 +188,35 @@ function Largeboard() {
   //   };
   // }, []);
 
+  useEffect(() => {
+    if (restarting) {
+      {
+        setDimension(inputDimension);
+        initialState = Array(dimension)
+          .fill(0)
+          .map((e) => Array(dimension).fill(null));
+        setLbState(initialState);
+        initialCompleteState = Array(dimension)
+          .fill(0)
+          .map((e) =>
+            Array(dimension)
+              .fill(0)
+              .map((e) =>
+                Array(dimension)
+                  .fill(0)
+                  .map((e) => Array(dimension).fill(null))
+              )
+          );
+        setCompleteState(initialCompleteState);
+        setCurrentBoard(null);
+        setWinner(null);
+        setCurrentPlayer('X');
+        setFocusBoard(null);
+        setRestarting(false);
+      }
+    }
+  });
+
   return (
     <>
       <h2>{winner ? `${winner} WINS` : `It is ${currentPlayer}'s turn`}</h2>
@@ -169,22 +227,21 @@ function Largeboard() {
         onMouseMove={(e) => {
           setFloaterPosition({ x: e.clientX - 15, y: e.clientY - 20 });
         }}
+        style={{
+          gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
+        }}
       >
         {restarting ? null : mbLayout}
       </div>
-      <button
-        onClick={() => {
-          setLbState(initialState);
-          setCurrentBoard(null);
-          setWinner(null);
-          setCurrentPlayer('X');
-          setFocusBoard(null);
-          setRestarting(true);
-          setTimeout(() => setRestarting(false), 1);
+      <button onClick={() => setRestarting(true)}>Restart!</button>
+      {/* <input
+        id="dimensionInput"
+        value={inputDimension}
+        onChange={(e) => {
+          console.log(e.target.value);
+          setInputDimension(e.target.value);
         }}
-      >
-        Restart!
-      </button>
+      /> */}
       {isHovered && (
         <div
           className="floater"
