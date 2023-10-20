@@ -79,3 +79,13 @@ body {
   overflow:hidden;
   font-size: 20vw;
 }
+
+.floater {
+  font-family: Arial, Helvetica, sans-serif;  
+  height:8vw;
+  width: 8vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}

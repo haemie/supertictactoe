@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Miniboard from './miniboard';
 
 function Largeboard() {
@@ -14,13 +14,21 @@ function Largeboard() {
   const [winner, setWinner] = useState(null);
   const [restarting, setRestarting] = useState(false);
 
-  // function used by the miniboard to change the large board state when a mini board is won
+  /**
+   * function used by the miniboard to change the large board state when a mini board is won
+   * @param {*} row
+   * @param {*} col
+   */
   function handleMiniWin(row, col) {
     lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
     setLbState([...lbState]);
   }
 
-  // check for winstate in board
+  /**
+   * function to check whether there is a winner on the board matrix
+   * @param {*} board
+   * @returns winner marker, or undefined
+   */
   function checkWin(board) {
     let winner;
     for (let i = 0; i < board.length; i++) {
@@ -103,12 +111,18 @@ function Largeboard() {
     }
   }
 
+  /**
+   * div updates depending on game state
+   */
   let currentTurnDiv = winner ? (
     <h2>{winner} WINS!</h2>
   ) : (
     <h2>It is {currentPlayer}'s turn</h2>
   );
 
+  /**
+   * conditionally render large board depending on whether restarting
+   */
   let largeBoardDiv = restarting ? (
     <div className="largeBoard"></div>
   ) : (
@@ -131,13 +145,34 @@ function Largeboard() {
     }
   }, [currentBoard]);
 
+  /**
+   * check for winners whenever large board state updates
+   */
   useEffect(() => {
-    // check for any win states
     const result = checkWin(lbState);
     if (result) {
       setWinner(result);
     }
   }, [lbState]);
+
+  /**
+   * update cursor shape and position
+   */
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const floaterRef = useRef();
+  useEffect(() => {
+    const moveFloater = (e) => {
+      // console.log(e);
+      const floater = floaterRef.current;
+      floater.style.left = e.clientX + 'px';
+      floater.style.top = e.clientY + 'px';
+    };
+    document.addEventListener('mousemove', moveFloater);
+
+    return () => {
+      document.removeEventListener('mousemove', moveFloater);
+    };
+  }, []);
 
   return (
     <>
@@ -156,6 +191,16 @@ function Largeboard() {
       >
         Restart!
       </button>
+      <div
+        className="floater"
+        ref={floaterRef}
+        style={{
+          color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
+          fontSize: '6vw',
+        }}
+      >
+        {winner || currentPlayer}
+      </div>
     </>
   );
 }
