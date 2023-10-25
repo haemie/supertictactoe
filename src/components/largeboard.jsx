@@ -74,6 +74,7 @@ function Largeboard() {
   }
 
   let mbLayout = Array(dimension);
+  // console.log(lbState);
   for (let i = 0; i < dimension; i++) {
     mbLayout[i] = [];
     for (let j = 0; j < dimension; j++) {
@@ -170,7 +171,6 @@ function Largeboard() {
    * update cursor shape and position
    */
   // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const floaterRef = useRef();
   const [isHovered, setIsHovered] = useState(false);
   const [floaterPosition, setFloaterPosition] = useState({ x: 0, y: 0 });
   // useEffect(() => {
@@ -190,32 +190,30 @@ function Largeboard() {
 
   useEffect(() => {
     if (restarting) {
-      {
-        setDimension(inputDimension);
-        initialState = Array(dimension)
-          .fill(0)
-          .map((e) => Array(dimension).fill(null));
-        setLbState(initialState);
-        initialCompleteState = Array(dimension)
-          .fill(0)
-          .map((e) =>
-            Array(dimension)
-              .fill(0)
-              .map((e) =>
-                Array(dimension)
-                  .fill(0)
-                  .map((e) => Array(dimension).fill(null))
-              )
-          );
-        setCompleteState(initialCompleteState);
-        setCurrentBoard(null);
-        setWinner(null);
-        setCurrentPlayer('X');
-        setFocusBoard(null);
-        setRestarting(false);
-      }
+      setDimension(inputDimension);
+      initialState = Array(inputDimension)
+        .fill(0)
+        .map((e) => Array(inputDimension).fill(null));
+      setLbState(initialState);
+      initialCompleteState = Array(inputDimension)
+        .fill(0)
+        .map((e) =>
+          Array(inputDimension)
+            .fill(0)
+            .map((e) =>
+              Array(inputDimension)
+                .fill(0)
+                .map((e) => Array(inputDimension).fill(null))
+            )
+        );
+      setCompleteState(initialCompleteState);
+      setCurrentBoard(null);
+      setWinner(null);
+      setCurrentPlayer('X');
+      setFocusBoard(null);
+      setRestarting(false);
     }
-  });
+  }, [restarting, inputDimension]);
 
   return (
     <>
@@ -234,18 +232,17 @@ function Largeboard() {
         {restarting ? null : mbLayout}
       </div>
       <button onClick={() => setRestarting(true)}>Restart!</button>
-      {/* <input
+      <input
         id="dimensionInput"
         value={inputDimension}
         onChange={(e) => {
           console.log(e.target.value);
-          setInputDimension(e.target.value);
+          setInputDimension(Number(e.target.value));
         }}
-      /> */}
+      />
       {isHovered && (
         <div
           className="floater"
-          ref={floaterRef}
           style={{
             color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
             fontSize: '6vw',
