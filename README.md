@@ -56,7 +56,8 @@ To get a local copy up and running follow these simple example steps.
 
 ## Roadmap
 
-- [ ] option to change game dimensions
+- [x] option to change game dimensions
+  - [ ] add better scaling with different dimensions
 - [x] add specific colors for 'X' and 'O'
 - [ ] general styling improvements
 - [x] lift state out of components
