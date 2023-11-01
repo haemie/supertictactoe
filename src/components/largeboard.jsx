@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Miniboard from './miniboard';
 import { oSVG, xSVG } from '../assets/SVG';
 
+const jsConfetti = new JSConfetti();
+
 function Largeboard() {
   const [dimension, setDimension] = useState(3);
   const [inputDimension, setInputDimension] = useState(3);
@@ -165,6 +167,7 @@ function Largeboard() {
     const result = checkWin(lbState);
     if (result) {
       setWinner(result);
+      jsConfetti.addConfetti();
     }
   }, [lbState]);
 
