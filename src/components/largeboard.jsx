@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Miniboard from './miniboard';
+import { oSVG, xSVG } from '../assets/SVG';
 
 function Largeboard() {
   const [dimension, setDimension] = useState(3);
@@ -85,7 +86,7 @@ function Largeboard() {
             key={`filled${i}${j}`}
             style={lbState[i][j] === 'X' ? { color: 'red' } : { color: 'blue' }}
           >
-            {lbState[i][j]}
+            {lbState[i][j] === 'X' ? xSVG : oSVG}
           </div>
         );
       } else {
@@ -237,7 +238,7 @@ function Largeboard() {
         value={inputDimension}
         onChange={(e) => {
           console.log(e.target.value);
-          setInputDimension(Number(e.target.value));
+          setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
         }}
       />
       {isHovered && (
