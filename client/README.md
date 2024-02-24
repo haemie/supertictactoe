@@ -14,7 +14,6 @@
 
 ## About The Project
 
-Super Tic Tac Toe game made after I saw a [VSauce video](https://www.youtube.com/shorts/_Na3a1ZrX7c) on it.
 Play the current build [here](https://main--unrivaled-longma-b1ad92.netlify.app/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -47,7 +46,7 @@ To get a local copy up and running follow these simple example steps.
    ```
 2. Install NPM packages
    ```sh
-   yarn install
+   npm install
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
