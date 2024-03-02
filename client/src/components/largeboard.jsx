@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Miniboard from './miniboard';
 import { oSVG, xSVG } from '../assets/SVG';
+import {
+  createInitialState,
+  createInitialCompleteState,
+  createFilledMini,
+} from '../utility/gameConfig';
+import { checkWin } from '../utility/gameLogic';
 
 const jsConfetti = new JSConfetti();
 
@@ -8,21 +14,9 @@ function Largeboard() {
   const [dimension, setDimension] = useState(3);
   const [inputDimension, setInputDimension] = useState(3);
 
-  let initialState = Array(dimension)
-    .fill(0)
-    .map((e) => Array(dimension).fill(null));
+  let initialState = createInitialState(dimension);
 
-  let initialCompleteState = Array(dimension)
-    .fill(0)
-    .map((e) =>
-      Array(dimension)
-        .fill(0)
-        .map((e) =>
-          Array(dimension)
-            .fill(0)
-            .map((e) => Array(dimension).fill(null))
-        )
-    );
+  let initialCompleteState = createInitialCompleteState(dimension);
 
   const [completeState, setCompleteState] = useState(initialCompleteState);
   const [lbState, setLbState] = useState(initialState);
@@ -42,55 +36,14 @@ function Largeboard() {
     setLbState([...lbState]);
   }
 
-  /**
-   * function to check whether there is a winner on the board matrix
-   * @param {*} board
-   * @returns winner marker, or undefined
-   */
-  function checkWin(board) {
-    let winner;
-    for (let i = 0; i < board.length; i++) {
-      // check rows
-      if (new Set(board[i]).size === 1 && board[i][0] !== null) {
-        return board[i][0];
-      }
-      if (
-        new Set(board.map((row) => row[i])).size === 1 &&
-        board[0][i] !== null
-      ) {
-        return board[0][i];
-      }
-    }
-    if (
-      new Set(board.map((row, index) => row[index])).size === 1 &&
-      board[0][0] !== null
-    ) {
-      return board[0][0];
-    }
-    if (
-      new Set(board.map((row, index) => row[board.length - 1 - index])).size ===
-        1 &&
-      board[0][board.length - 1] !== null
-    ) {
-      return board[0][board.length - 1];
-    }
-  }
-
   let mbLayout = Array(dimension);
   // console.log(lbState);
   for (let i = 0; i < dimension; i++) {
     mbLayout[i] = [];
     for (let j = 0; j < dimension; j++) {
       if (lbState[i][j]) {
-        mbLayout[i].push(
-          <div
-            className="filledMini"
-            key={`filled${i}${j}`}
-            style={lbState[i][j] === 'X' ? { color: 'red' } : { color: 'blue' }}
-          >
-            {lbState[i][j] === 'X' ? xSVG : oSVG}
-          </div>
-        );
+        // truthy value means the mini board has been filled
+        mbLayout[i].push(createFilledMini(i, j, lbState[i][j]));
       } else {
         if (
           !winner &&
@@ -110,7 +63,6 @@ function Largeboard() {
               miniboardID={[i, j]}
               marker={lbState[i][j]}
               handleWin={() => handleMiniWin(i, j)}
-              checkWin={(b) => checkWin(b)}
               dimension={dimension}
               miniState={completeState[i][j]}
               setMiniState={(newMiniState) => {
@@ -129,7 +81,6 @@ function Largeboard() {
               miniboardID={[i, j]}
               marker={lbState[i][j]}
               focused={false}
-              checkWin={(b) => checkWin(b)}
               dimension={dimension}
               miniState={completeState[i][j]}
               setMiniState={(newMiniState) => {
@@ -146,12 +97,6 @@ function Largeboard() {
 
   useEffect(() => {
     if (currentBoard) {
-      // console.log('current board', currentBoard);
-      // console.log(
-      //   'state of current board',
-      //   lbState[currentBoard[0]][currentBoard[1]]
-      // );
-      // console.log('focused board', focusBoard);
       if (lbState[currentBoard[0]][currentBoard[1]]) {
         setFocusBoard(null);
       } else {
@@ -177,40 +122,12 @@ function Largeboard() {
   // const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [floaterPosition, setFloaterPosition] = useState({ x: 0, y: 0 });
-  // useEffect(() => {
-  //   const moveFloater = (e) => {
-  //     // console.log(e);
-
-  //     const floater = floaterRef.current;
-  //     floater.style.left = e.clientX - 20 + 'px';
-  //     floater.style.top = e.clientY - 30 + 'px';
-  //   };
-  //   document.addEventListener('mousemove', moveFloater);
-
-  //   return () => {
-  //     document.removeEventListener('mousemove', moveFloater);
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (restarting) {
       setDimension(inputDimension);
-      initialState = Array(inputDimension)
-        .fill(0)
-        .map((e) => Array(inputDimension).fill(null));
-      setLbState(initialState);
-      initialCompleteState = Array(inputDimension)
-        .fill(0)
-        .map((e) =>
-          Array(inputDimension)
-            .fill(0)
-            .map((e) =>
-              Array(inputDimension)
-                .fill(0)
-                .map((e) => Array(inputDimension).fill(null))
-            )
-        );
-      setCompleteState(initialCompleteState);
+      setLbState(createInitialState(inputDimension));
+      setCompleteState(createInitialCompleteState(inputDimension));
       setCurrentBoard(null);
       setWinner(null);
       setCurrentPlayer('X');

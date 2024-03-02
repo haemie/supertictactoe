@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Box from './box';
+import { checkWin } from '../utility/gameLogic';
 
 function Miniboard({
   className,
@@ -10,17 +11,11 @@ function Miniboard({
   focused,
   marker,
   handleWin,
-  checkWin,
   miniboardID,
   dimension,
   miniState,
   setMiniState,
 }) {
-  let initialState = Array(dimension)
-    .fill(0)
-    .map((e) => Array(dimension).fill(null));
-  // initial miniboard state with null values
-
   // console.log(miniState);
   // when a box is clicked, assign the current player to the miniboard state, which updates the box marker, and update current player
 
