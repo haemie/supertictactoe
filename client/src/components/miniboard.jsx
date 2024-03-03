@@ -24,7 +24,6 @@ function Miniboard({
         newMiniState[row][col] = currentPlayer;
         setMiniState(newMiniState);
         setNextBoard([row, col]);
-        console.log(currentPlayer);
         setCurrentPlayer((prevPlayer) => (prevPlayer === 'X' ? 'O' : 'X'));
       }
     },
@@ -32,23 +31,20 @@ function Miniboard({
   );
 
   const boxLayoutMemo = useMemo(() => {
-    console.log(focused, miniKey);
+    // console.log(focused, miniKey);
     return miniState.map((row, i) =>
       row.map((e, j) => {
         return focused ? (
           <Box
             key={`box${i}${j}`}
-            className="box"
-            boxID={[i, j]}
             marker={miniState[i][j]}
             handleClick={() => handleClick(i, j)}
-            data-test={`${miniKey}box${i}${j}`}
+            testProp={`${miniKey}-box${i}${j}`}
           />
         ) : (
           <Box
             key={`box${i}${j}`}
-            className="box"
-            boxID={[i, j]}
+            testProp={`${miniKey}-box${i}${j}`}
             marker={miniState[i][j]}
           />
         );

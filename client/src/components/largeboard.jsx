@@ -40,7 +40,6 @@ function Largeboard() {
       lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
       setLbState([...lbState]);
     }
-    console.log('render');
     return lbState.map((row, i) =>
       row.map((marker, j) => {
         // if the largeboard has a non null element, that means that space has been won by the marker
@@ -99,7 +98,6 @@ function Largeboard() {
    * otherwise, set currentBoard to the unoccupied board
    */
   useEffect(() => {
-    console.log('asdf');
     if (nextBoard) {
       if (lbState[nextBoard[0]][nextBoard[1]]) {
         setCurrentBoard(null);
@@ -142,7 +140,9 @@ function Largeboard() {
 
   return (
     <>
-      <h2>{winner ? `${winner} WINS` : `It is ${currentPlayer}'s turn`}</h2>
+      <h2 data-test="game-status">
+        {winner ? `${winner} WINS` : `It is ${currentPlayer}'s turn`}
+      </h2>
       <div
         id="largeBoard"
         onMouseEnter={() => setIsHovered(true)}
@@ -156,15 +156,27 @@ function Largeboard() {
       >
         {restarting ? null : mbLayoutMemo}
       </div>
-      <button onClick={() => setRestarting(true)}>Restart!</button>
-      <input
-        id="dimensionInput"
-        value={inputDimension}
-        onChange={(e) => {
-          console.log(e.target.value);
-          setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
-        }}
-      />
+      <form>
+        <input
+          type="submit"
+          value="Restart!"
+          data-test="restart-button"
+          onClick={(e) => {
+            e.preventDefault();
+            setRestarting(true);
+          }}
+        />
+        <input
+          id="dimensionInput"
+          data-test="dimension-input"
+          value={inputDimension}
+          onChange={(e) => {
+            // console.log(e.target.value);
+            setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
+          }}
+        />
+      </form>
+
       {isHovered && (
         <div
           className="floater"
