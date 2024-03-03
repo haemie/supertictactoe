@@ -56,14 +56,9 @@ function Largeboard() {
               key={`mb${i}${j}`}
               currentPlayer={currentPlayer}
               setCurrentPlayer={setCurrentPlayer}
-              currentBoard={currentBoard}
               setCurrentBoard={setCurrentBoard}
               focused={true}
-              className="focusedBoard"
-              miniboardID={[i, j]}
-              marker={lbState[i][j]}
               handleWin={() => handleMiniWin(i, j)}
-              dimension={dimension}
               miniState={completeState[i][j]}
               setMiniState={(newMiniState) => {
                 let newCompleteState = [...completeState];
@@ -77,17 +72,8 @@ function Largeboard() {
             <Miniboard
               style={{ backgroundColor: '#7f7f7f' }}
               key={`mb${i}${j}`}
-              className="miniBoard"
-              miniboardID={[i, j]}
-              marker={lbState[i][j]}
               focused={false}
-              dimension={dimension}
               miniState={completeState[i][j]}
-              setMiniState={(newMiniState) => {
-                let newCompleteState = [...completeState];
-                newCompleteState[i][j] = newMiniState;
-                setCompleteState(newCompleteState);
-              }}
             />
           );
         }

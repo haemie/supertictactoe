@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Box from './box';
 import { checkWin } from '../utility/gameLogic';
+import PropTypes from 'prop-types';
 
 function Miniboard({
-  className,
   currentPlayer,
   setCurrentPlayer,
   setCurrentBoard,
   style,
   focused,
-  marker,
   handleWin,
-  miniboardID,
-  dimension,
   miniState,
   setMiniState,
 }) {
@@ -28,6 +25,8 @@ function Miniboard({
       setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
     }
   }
+
+  const dimension = miniState.length;
 
   let boxLayout = Array(dimension);
   for (let i = 0; i < dimension; i++) {
@@ -59,13 +58,13 @@ function Miniboard({
   useEffect(() => {
     // check for any win states
     if (checkWin(miniState)) {
-      handleWin(miniboardID[0], miniboardID[1]);
+      handleWin();
     }
   }, [miniState]);
 
   return (
     <div
-      className={className}
+      className={focused ? 'focusedBoard' : 'miniBoard'}
       style={{
         ...style,
         gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
@@ -75,5 +74,17 @@ function Miniboard({
     </div>
   );
 }
+
+Miniboard.propTypes = {
+  className: PropTypes.string,
+  currentPlayer: PropTypes.string,
+  setCurrentPlayer: PropTypes.func,
+  setCurrentBoard: PropTypes.func,
+  style: PropTypes.object.isRequired,
+  focused: PropTypes.bool.isRequired,
+  handleWin: PropTypes.func,
+  miniState: PropTypes.arrayOf(PropTypes.array),
+  setMiniState: PropTypes.func,
+};
 
 export default Miniboard;
