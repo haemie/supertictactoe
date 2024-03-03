@@ -12,6 +12,7 @@ function Miniboard({
   handleWin,
   miniState,
   setMiniState,
+  miniKey,
 }) {
   // console.log(miniState);
   // when a box is clicked, assign the current player to the miniboard state, which updates the box marker, and update current player
@@ -34,7 +35,7 @@ function Miniboard({
     () =>
       miniState.map((row, i) =>
         row.map((e, j) => {
-          // console.log('refresh');
+          console.log(miniKey);
           return focused ? (
             <Box
               key={`box${i}${j}`}
@@ -86,6 +87,7 @@ Miniboard.propTypes = {
   handleWin: PropTypes.func,
   miniState: PropTypes.arrayOf(PropTypes.array),
   setMiniState: PropTypes.func,
+  miniKey: PropTypes.string,
 };
 
 export default Miniboard;

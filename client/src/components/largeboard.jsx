@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Miniboard from './miniboard';
 import { oSVG, xSVG } from '../assets/SVG';
 import {
@@ -7,17 +7,15 @@ import {
   createFilledMini,
 } from '../utility/gameConfig';
 import { checkWin } from '../utility/gameLogic';
+import JSConfetti from 'js-confetti';
 
 const jsConfetti = new JSConfetti();
 
 function Largeboard() {
   const [dimension, setDimension] = useState(3);
   const [inputDimension, setInputDimension] = useState(3);
-
   let initialState = createInitialState(dimension);
-
   let initialCompleteState = createInitialCompleteState(dimension);
-
   const [completeState, setCompleteState] = useState(initialCompleteState);
   const [lbState, setLbState] = useState(initialState);
   const [currentPlayer, setCurrentPlayer] = useState('X');
@@ -26,60 +24,59 @@ function Largeboard() {
   const [winner, setWinner] = useState(null);
   const [restarting, setRestarting] = useState(false);
 
-  /**
-   * function used by the miniboard to change the large board state when a mini board is won
-   * @param {*} row
-   * @param {*} col
-   */
-  function handleMiniWin(row, col) {
-    lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
-    setLbState([...lbState]);
-  }
-
-  let mbLayout = Array(dimension);
-  // console.log(lbState);
-  for (let i = 0; i < dimension; i++) {
-    mbLayout[i] = [];
-    for (let j = 0; j < dimension; j++) {
-      if (lbState[i][j]) {
-        // truthy value means the mini board has been filled
-        mbLayout[i].push(createFilledMini(i, j, lbState[i][j]));
-      } else {
-        if (
-          !winner &&
-          (!focusBoard ||
-            (focusBoard && focusBoard[0] === i && focusBoard[1] === j))
-        ) {
-          mbLayout[i].push(
-            <Miniboard
-              style={{ backgroundColor: '#0268e6' }}
-              key={`mb${i}${j}`}
-              currentPlayer={currentPlayer}
-              setCurrentPlayer={setCurrentPlayer}
-              setCurrentBoard={setCurrentBoard}
-              focused={true}
-              handleWin={() => handleMiniWin(i, j)}
-              miniState={completeState[i][j]}
-              setMiniState={(newMiniState) => {
-                let newCompleteState = [...completeState];
-                newCompleteState[i][j] = newMiniState;
-                setCompleteState(newCompleteState);
-              }}
-            />
-          );
-        } else {
-          mbLayout[i].push(
-            <Miniboard
-              style={{ backgroundColor: '#7f7f7f' }}
-              key={`mb${i}${j}`}
-              focused={false}
-              miniState={completeState[i][j]}
-            />
-          );
-        }
-      }
+  const mbLayoutMemo = useMemo(() => {
+    /**
+     * function used by the miniboard to change the large board state when a mini board is won
+     * @param {*} row
+     * @param {*} col
+     */
+    function handleMiniWin(row, col) {
+      lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
+      setLbState([...lbState]);
     }
-  }
+    return lbState.map((row, i) =>
+      row.map((marker, j) => {
+        // console.log('o');
+        if (marker) {
+          return createFilledMini(i, j, marker);
+        } else {
+          if (
+            !winner &&
+            (!focusBoard ||
+              (focusBoard && focusBoard[0] === i && focusBoard[1] === j))
+          ) {
+            return (
+              <Miniboard
+                style={{ backgroundColor: '#0268e6' }}
+                key={`mb${i}${j}`}
+                currentPlayer={currentPlayer}
+                setCurrentPlayer={setCurrentPlayer}
+                setCurrentBoard={setCurrentBoard}
+                focused={true}
+                handleWin={() => handleMiniWin(i, j)}
+                miniState={completeState[i][j]}
+                setMiniState={(newMiniState) => {
+                  let newCompleteState = [...completeState];
+                  newCompleteState[i][j] = newMiniState;
+                  setCompleteState(newCompleteState);
+                }}
+                miniKey={`mb${i}${j}`}
+              />
+            );
+          } else {
+            return (
+              <Miniboard
+                style={{ backgroundColor: '#7f7f7f' }}
+                key={`mb${i}${j}`}
+                focused={false}
+                miniState={completeState[i][j]}
+              />
+            );
+          }
+        }
+      })
+    );
+  }, [lbState, winner, focusBoard, currentPlayer, completeState]);
 
   useEffect(() => {
     if (currentBoard) {
@@ -136,7 +133,7 @@ function Largeboard() {
           gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
         }}
       >
-        {restarting ? null : mbLayout}
+        {restarting ? null : mbLayoutMemo}
       </div>
       <button onClick={() => setRestarting(true)}>Restart!</button>
       <input
