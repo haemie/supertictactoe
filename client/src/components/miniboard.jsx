@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 function Miniboard({
   currentPlayer,
   setCurrentPlayer,
-  setCurrentBoard,
+  setNextBoard,
   style,
   focused,
   handleWin,
@@ -23,39 +23,38 @@ function Miniboard({
         let newMiniState = [...miniState];
         newMiniState[row][col] = currentPlayer;
         setMiniState(newMiniState);
-        setCurrentBoard([row, col]);
+        setNextBoard([row, col]);
         console.log(currentPlayer);
         setCurrentPlayer((prevPlayer) => (prevPlayer === 'X' ? 'O' : 'X'));
       }
     },
-    [currentPlayer, setCurrentPlayer, miniState, setMiniState, setCurrentBoard]
+    [currentPlayer, setCurrentPlayer, miniState, setMiniState, setNextBoard]
   );
 
-  const boxLayoutMemo = useMemo(
-    () =>
-      miniState.map((row, i) =>
-        row.map((e, j) => {
-          console.log(miniKey);
-          return focused ? (
-            <Box
-              key={`box${i}${j}`}
-              className="box"
-              boxID={[i, j]}
-              marker={miniState[i][j]}
-              handleClick={() => handleClick(i, j)}
-            />
-          ) : (
-            <Box
-              key={`box${i}${j}`}
-              className="box"
-              boxID={[i, j]}
-              marker={miniState[i][j]}
-            />
-          );
-        })
-      ),
-    [miniState, focused, handleClick]
-  );
+  const boxLayoutMemo = useMemo(() => {
+    console.log(focused, miniKey);
+    return miniState.map((row, i) =>
+      row.map((e, j) => {
+        return focused ? (
+          <Box
+            key={`box${i}${j}`}
+            className="box"
+            boxID={[i, j]}
+            marker={miniState[i][j]}
+            handleClick={() => handleClick(i, j)}
+            data-test={`${miniKey}box${i}${j}`}
+          />
+        ) : (
+          <Box
+            key={`box${i}${j}`}
+            className="box"
+            boxID={[i, j]}
+            marker={miniState[i][j]}
+          />
+        );
+      })
+    );
+  }, [miniState, focused, handleClick, miniKey]);
 
   useEffect(() => {
     // check for any win states
@@ -81,7 +80,7 @@ Miniboard.propTypes = {
   className: PropTypes.string,
   currentPlayer: PropTypes.string,
   setCurrentPlayer: PropTypes.func,
-  setCurrentBoard: PropTypes.func,
+  setNextBoard: PropTypes.func,
   style: PropTypes.object.isRequired,
   focused: PropTypes.bool.isRequired,
   handleWin: PropTypes.func,
