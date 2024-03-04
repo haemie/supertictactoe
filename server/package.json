@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "dev": "set NODE_ENV=development&& nodemon --watch \"src/**\" --ext \"ts,json\" --ignore \"src/**/*.spec.ts\" --exec \"ts-node src/index.ts\"",
-    "start": "set NODE_ENV=production&& node dist/index.js"
+    "start": "set NODE_ENV=production&& node dist/index.js",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
