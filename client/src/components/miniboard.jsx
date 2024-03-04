@@ -14,9 +14,7 @@ function Miniboard({
   setMiniState,
   miniKey,
 }) {
-  // console.log(miniState);
   // when a box is clicked, assign the current player to the miniboard state, which updates the box marker, and update current player
-
   const handleClick = useCallback(
     (row, col) => {
       if (!miniState[row][col]) {
@@ -31,7 +29,6 @@ function Miniboard({
   );
 
   const boxLayoutMemo = useMemo(() => {
-    // console.log(focused, miniKey);
     return miniState.map((row, i) =>
       row.map((e, j) => {
         return focused ? (
@@ -52,10 +49,14 @@ function Miniboard({
     );
   }, [miniState, focused, handleClick, miniKey]);
 
+  /**
+   * currently this runs twice on winning click
+   */
   useEffect(() => {
     // check for any win states
-    if (checkWin(miniState)) {
-      handleWin();
+    const status = checkWin(miniState);
+    if (status) {
+      handleWin(status);
     }
   }, [miniState, handleWin]);
 

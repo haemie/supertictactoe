@@ -14,7 +14,7 @@
 
 ## About The Project
 
-Play the current build [here](https://main--unrivaled-longma-b1ad92.netlify.app/).
+Tic tac toe but more
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -54,9 +54,11 @@ To get a local copy up and running follow these simple example steps.
 ### Testing
 
 1. Open Cypress
+
    ```npx cypress open
 
    ```
+
 2. Install NPM packages
    ```sh
    npm install
@@ -68,11 +70,8 @@ To get a local copy up and running follow these simple example steps.
 
 ## Roadmap
 
-- [x] option to change game dimensions
-  - [ ] add better scaling with different dimensions
-- [x] add specific colors for 'X' and 'O'
+- [ ] add better scaling with different dimensions
 - [ ] general styling improvements
-- [x] lift state out of components
 - [ ] add online multiplayer
 - [ ] add singleplayer
 

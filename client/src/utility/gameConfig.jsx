@@ -29,3 +29,22 @@ export const createFilledMini = (i, j, marker) => {
     </div>
   );
 };
+
+export const createTiedMini = (board) => {
+  return (
+    <div
+      className="miniBoard"
+      style={{
+        gridTemplate: `repeat(${board.length}, 1fr) / repeat(${board.length}, 1fr)`,
+      }}
+    >
+      {board.map((row, i) =>
+        row.map((e, j) => (
+          <div key={`${i}${j}`} className="box">
+            {e === 'X' ? xSVG : oSVG}
+          </div>
+        ))
+      )}
+    </div>
+  );
+};

@@ -5,6 +5,7 @@ import {
   createInitialState,
   createInitialCompleteState,
   createFilledMini,
+  createTiedMini,
 } from '../utility/gameConfig';
 import { checkWin } from '../utility/gameLogic';
 import JSConfetti from 'js-confetti';
@@ -36,15 +37,20 @@ function Largeboard() {
      * @param {*} row
      * @param {*} col
      */
-    function handleMiniWin(row, col) {
-      lbState[row][col] = currentPlayer === 'X' ? 'O' : 'X';
+    function handleMiniWin(row, col, status) {
+      // status could be 'X', 'O', or 'draw'
+      lbState[row][col] = status;
       setLbState([...lbState]);
     }
     return lbState.map((row, i) =>
       row.map((marker, j) => {
-        // if the largeboard has a non null element, that means that space has been won by the marker
+        // if the largeboard has a non null element, that means that space has been won by the marker or is tied
         if (marker) {
-          return createFilledMini(i, j, marker);
+          if (marker === 'draw') {
+            return createTiedMini(completeState[i][j]);
+          } else {
+            return createFilledMini(i, j, marker);
+          }
         } else {
           // if no one has won yet, and either:
           // 1) there is no current board meaning this is a new game, or the targeted board is already filled
@@ -63,7 +69,9 @@ function Largeboard() {
                 setCurrentPlayer={setCurrentPlayer}
                 setNextBoard={setNextBoard}
                 focused={true}
-                handleWin={() => handleMiniWin(i, j)}
+                handleWin={(status) => {
+                  handleMiniWin(i, j, status);
+                }}
                 miniState={completeState[i][j]}
                 setMiniState={(newMiniState) => {
                   let newCompleteState = [...completeState];
@@ -114,7 +122,14 @@ function Largeboard() {
     const result = checkWin(lbState);
     if (result) {
       setWinner(result);
-      jsConfetti.addConfetti();
+      if (result === 'draw') {
+        jsConfetti.addConfetti({
+          emojis: ['💀', '😭', '😞'],
+        });
+      } else
+        jsConfetti.addConfetti({
+          emojis: ['🎉', '🎈', '🎊', '🥳'],
+        });
     }
   }, [lbState]);
 
@@ -141,7 +156,11 @@ function Largeboard() {
   return (
     <>
       <h2 data-test="game-status">
-        {winner ? `${winner} WINS` : `It is ${currentPlayer}'s turn`}
+        {winner
+          ? winner === 'draw'
+            ? 'DRAW'
+            : `${winner} WINS`
+          : `It is ${currentPlayer}'s turn`}
       </h2>
       <div
         id="largeBoard"
@@ -171,7 +190,6 @@ function Largeboard() {
           data-test="dimension-input"
           value={inputDimension}
           onChange={(e) => {
-            // console.log(e.target.value);
             setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
           }}
         />
@@ -187,7 +205,7 @@ function Largeboard() {
             top: floaterPosition.y + 'px',
           }}
         >
-          {winner || currentPlayer}
+          {winner === 'draw' ? '💀' : winner || currentPlayer}
         </div>
       )}
     </>
