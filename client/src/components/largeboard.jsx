@@ -9,24 +9,28 @@ import {
 } from '../utility/gameConfig';
 import { checkWin } from '../utility/gameLogic';
 import JSConfetti from 'js-confetti';
+import PropTypes from 'prop-types';
 
 const jsConfetti = new JSConfetti();
 
-function Largeboard() {
+function Largeboard({
+  restarting,
+  setRestarting,
+  inputDimension,
+  winner,
+  setWinner,
+  currentPlayer,
+  setCurrentPlayer,
+}) {
   const [dimension, setDimension] = useState(3);
-  const [inputDimension, setInputDimension] = useState(3);
 
   let initialState = createInitialState(dimension);
   let initialCompleteState = createInitialCompleteState(dimension);
   const [completeState, setCompleteState] = useState(initialCompleteState);
   const [lbState, setLbState] = useState(initialState);
 
-  const [currentPlayer, setCurrentPlayer] = useState('X');
   const [nextBoard, setNextBoard] = useState(null);
   const [currentBoard, setCurrentBoard] = useState(null);
-
-  const [winner, setWinner] = useState(null);
-  const [restarting, setRestarting] = useState(false);
 
   /**
    * memoized layout to prevent unnecessary rerenders and O(n^2) computation
@@ -98,7 +102,14 @@ function Largeboard() {
         }
       })
     );
-  }, [lbState, winner, currentBoard, currentPlayer, completeState]);
+  }, [
+    lbState,
+    winner,
+    currentBoard,
+    currentPlayer,
+    setCurrentPlayer,
+    completeState,
+  ]);
 
   /**
    * checks if the target nextBoard is already occupied
@@ -131,7 +142,7 @@ function Largeboard() {
           emojis: ['🎉', '🎈', '🎊', '🥳'],
         });
     }
-  }, [lbState]);
+  }, [lbState, setWinner]);
 
   /**
    * update cursor shape and position
@@ -151,17 +162,10 @@ function Largeboard() {
       setCurrentBoard(null);
       setRestarting(false);
     }
-  }, [restarting, inputDimension]);
+  }, [restarting, setRestarting, setCurrentPlayer, inputDimension, setWinner]);
 
   return (
     <>
-      <h2 data-test="game-status">
-        {winner
-          ? winner === 'draw'
-            ? 'DRAW'
-            : `${winner} WINS`
-          : `It is ${currentPlayer}'s turn`}
-      </h2>
       <div
         id="largeBoard"
         onMouseEnter={() => setIsHovered(true)}
@@ -175,25 +179,6 @@ function Largeboard() {
       >
         {restarting ? null : mbLayoutMemo}
       </div>
-      <form>
-        <input
-          type="submit"
-          value="Restart!"
-          data-test="restart-button"
-          onClick={(e) => {
-            e.preventDefault();
-            setRestarting(true);
-          }}
-        />
-        <input
-          id="dimensionInput"
-          data-test="dimension-input"
-          value={inputDimension}
-          onChange={(e) => {
-            setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
-          }}
-        />
-      </form>
 
       {isHovered && (
         <div
@@ -211,5 +196,15 @@ function Largeboard() {
     </>
   );
 }
+
+Largeboard.propTypes = {
+  restarting: PropTypes.bool.isRequired,
+  setRestarting: PropTypes.func.isRequired,
+  inputDimension: PropTypes.number.isRequired,
+  winner: PropTypes.string,
+  setWinner: PropTypes.func.isRequired,
+  currentPlayer: PropTypes.string.isRequired,
+  setCurrentPlayer: PropTypes.func.isRequired,
+};
 
 export default Largeboard;
