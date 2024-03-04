@@ -22,9 +22,9 @@ function Largeboard({
   setWinner,
   currentPlayer,
   setCurrentPlayer,
+  dimension,
+  setDimension,
 }) {
-  const [dimension, setDimension] = useState(3);
-
   let initialState = createInitialState(dimension);
   let initialCompleteState = createInitialCompleteState(dimension);
   const [completeState, setCompleteState] = useState(initialCompleteState);
@@ -170,7 +170,14 @@ function Largeboard({
       // }, 1000);
     }
     // return () => clearTimeout(showLoadingScreen);
-  }, [restarting, setRestarting, setCurrentPlayer, inputDimension, setWinner]);
+  }, [
+    restarting,
+    setRestarting,
+    setCurrentPlayer,
+    inputDimension,
+    setDimension,
+    setWinner,
+  ]);
 
   /**
    * log time to reload, look to improve performance with caching
@@ -230,6 +237,8 @@ Largeboard.propTypes = {
   setWinner: PropTypes.func.isRequired,
   currentPlayer: PropTypes.string.isRequired,
   setCurrentPlayer: PropTypes.func.isRequired,
+  dimension: PropTypes.number.isRequired,
+  setDimension: PropTypes.func.isRequired,
 };
 
 export default Largeboard;
