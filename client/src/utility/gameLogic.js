@@ -4,30 +4,43 @@
  * @param {*} board
  * @returns winner marker, or undefined
  */
+
 export function checkWin(board) {
+  const testSet = new Set();
+  let nullCount = 0;
   for (let i = 0; i < board.length; i++) {
     // check rows
-    if (new Set(board[i]).size === 1 && board[i][0] !== null) {
+    board[i].forEach((e) => {
+      if (e === null) nullCount += 1;
+      testSet.add(e);
+    });
+    if (testSet.size === 1 && board[i][0] !== null) {
       return board[i][0];
     }
-    if (
-      new Set(board.map((row) => row[i])).size === 1 &&
-      board[0][i] !== null
-    ) {
+    testSet.clear();
+    // check columns
+    board.map((row) => row[i]).forEach((e) => testSet.add(e));
+    if (testSet.size === 1 && board[0][i] !== null) {
       return board[0][i];
     }
+    testSet.clear();
   }
-  if (
-    new Set(board.map((row, index) => row[index])).size === 1 &&
-    board[0][0] !== null
-  ) {
+  // check top left to bottom right diagonal
+  board.map((row, index) => row[index]).forEach((e) => testSet.add(e));
+  if (testSet.size === 1 && board[0][0] !== null) {
     return board[0][0];
   }
-  if (
-    new Set(board.map((row, index) => row[board.length - 1 - index])).size ===
-      1 &&
-    board[0][board.length - 1] !== null
-  ) {
+  testSet.clear();
+  // check top right to bottom left diagonal
+  board
+    .map((row, index) => row[board.length - 1 - index])
+    .forEach((e) => testSet.add(e));
+  if (testSet.size === 1 && board[0][board.length - 1] !== null) {
     return board[0][board.length - 1];
+  }
+  testSet.clear();
+  // // check for draw
+  if (nullCount === 0) {
+    return 'draw';
   }
 }
