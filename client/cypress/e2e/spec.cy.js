@@ -3,7 +3,7 @@ describe('game functionality tests', () => {
     cy.visit('/');
     cy.getDataTest('restart-button').click();
   });
-  it('passes x winning game', () => {
+  it('passes x successfully wins 3x3 game', () => {
     cy.getDataTest('game-status').should('contain.text', "It is X's turn");
     cy.getDataTest('mb20-box02').click();
     cy.getDataTest('mb02-box10').click();
@@ -42,7 +42,7 @@ describe('game functionality tests', () => {
     cy.getDataTest('mb01-box02').click();
     cy.getDataTest('game-status').should('contain.text', 'X WINS');
   });
-  it('passes o winning game', () => {
+  it('passes o successfully wins 3x3 game', () => {
     cy.getDataTest('game-status').should('contain.text', "It is X's turn");
     cy.getDataTest('mb11-box22').click();
     cy.getDataTest('mb22-box00').click();
@@ -86,10 +86,62 @@ describe('game functionality tests', () => {
     cy.getDataTest('mb02-box01').click();
     cy.getDataTest('game-status').should('contain.text', 'O WINS');
   });
+  it('passes game ends in draw', () => {
+    cy.getDataTest('mb11-box11').click();
+    cy.getDataTest('mb11-box20').click();
+    cy.getDataTest('mb20-box10').click();
+    cy.getDataTest('mb10-box00').click();
+    cy.getDataTest('mb00-box22').click();
+    cy.getDataTest('mb22-box01').click();
+    cy.getDataTest('mb01-box11').click();
+    cy.getDataTest('mb11-box02').click();
+    cy.getDataTest('mb02-box21').click();
+    cy.getDataTest('mb21-box00').click();
+    cy.getDataTest('mb00-box21').click();
+    cy.getDataTest('mb21-box11').click();
+    cy.getDataTest('mb11-box00').click();
+    cy.getDataTest('mb00-box20').click();
+    cy.getDataTest('mb20-box11').click();
+    cy.getDataTest('mb11-box22').click();
+    cy.getDataTest('mb22-box10').click();
+    cy.getDataTest('mb10-box11').click();
+    cy.getDataTest('mb11-box21').click();
+    cy.getDataTest('mb21-box22').click();
+    cy.getDataTest('mb22-box12').click();
+    cy.getDataTest('mb12-box12').click();
+    cy.getDataTest('mb12-box01').click();
+    cy.getDataTest('mb01-box10').click();
+    cy.getDataTest('mb10-box22').click();
+    cy.getDataTest('mb22-box11').click();
+    cy.getDataTest('mb11-box01').click();
+    cy.getDataTest('mb01-box20').click();
+    cy.getDataTest('mb20-box12').click();
+    cy.getDataTest('mb12-box10').click();
+    cy.getDataTest('mb10-box12').click();
+    cy.getDataTest('mb12-box11').click();
+    cy.getDataTest('mb10-box02').click();
+    cy.getDataTest('mb02-box00').click();
+    cy.getDataTest('mb00-box00').click();
+    cy.getDataTest('mb00-box11').click();
+    cy.getDataTest('mb22-box21').click();
+    cy.getDataTest('mb00-box02').click();
+    cy.getDataTest('mb02-box22').click();
+    cy.getDataTest('mb22-box20').click();
+    cy.getDataTest('mb22-box00').click();
+    cy.getDataTest('mb22-box22').click();
+    cy.getDataTest('mb22-box02').click();
+    cy.getDataTest('mb02-box20').click();
+    cy.getDataTest('mb01-box00').click();
+    cy.getDataTest('mb02-box10').click();
+    cy.getDataTest('mb01-box22').click();
+    cy.getDataTest('game-status').should('contain.text', 'DRAW');
+  });
   it('properly resizes and maintains gameplay', () => {
     cy.get('.box').should('have.length', 3 * 3 * 3 * 3);
     cy.getDataTest('dimension-input').type('{backspace}2{enter}');
     cy.get('.box').should('have.length', 2 * 2 * 2 * 2);
+    cy.getDataTest('dimension-input').type('{backspace}5{enter}');
+    cy.get('.box').should('have.length', 5 * 5 * 5 * 5);
     cy.getDataTest('dimension-input').type('{backspace}4{enter}');
     cy.get('.box').should('have.length', 4 * 4 * 4 * 4);
     cy.getDataTest('restart-button').click();
