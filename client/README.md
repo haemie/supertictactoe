@@ -14,7 +14,7 @@
 
 ## About The Project
 
-Tic tac toe but more
+Tic tac toe but more. See this [VSauce video](https://www.youtube.com/shorts/_Na3a1ZrX7c) for more info.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

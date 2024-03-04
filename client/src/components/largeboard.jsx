@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Miniboard from './miniboard';
 // import { oSVG, xSVG } from '../assets/SVG';
 import {
@@ -10,6 +10,7 @@ import {
 import { checkWin } from '../utility/gameLogic';
 import JSConfetti from 'js-confetti';
 import PropTypes from 'prop-types';
+import LoadingAnimation from '../assets/loadingAni';
 
 const jsConfetti = new JSConfetti();
 
@@ -151,7 +152,11 @@ function Largeboard({
   const [isHovered, setIsHovered] = useState(false);
   const [floaterPosition, setFloaterPosition] = useState({ x: 0, y: 0 });
 
+  /**
+   * reset the board and all states when game restarts
+   */
   useEffect(() => {
+    // let showLoadingScreen;
     if (restarting) {
       setDimension(inputDimension);
       setLbState(createInitialState(inputDimension));
@@ -160,9 +165,28 @@ function Largeboard({
       setWinner(null);
       setCurrentPlayer('X');
       setCurrentBoard(null);
+      // showLoadingScreen = setTimeout(() => {
       setRestarting(false);
+      // }, 1000);
     }
+    // return () => clearTimeout(showLoadingScreen);
   }, [restarting, setRestarting, setCurrentPlayer, inputDimension, setWinner]);
+
+  /**
+   * log time to reload, look to improve performance with caching
+   */
+  const startRef = useRef(null);
+  const endRef = useRef(null);
+  useEffect(() => {
+    if (restarting) {
+      startRef.current = performance.now();
+    } else {
+      endRef.current = performance.now();
+      console.log(
+        `rerender took ${(endRef.current - startRef.current) / 1000} seconds`
+      );
+    }
+  }, [restarting]);
 
   return (
     <>
@@ -175,9 +199,10 @@ function Largeboard({
         }}
         style={{
           gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
+          gap: `${5 / dimension}vw`,
         }}
       >
-        {restarting ? null : mbLayoutMemo}
+        {restarting ? <LoadingAnimation /> : mbLayoutMemo}
       </div>
 
       {isHovered && (

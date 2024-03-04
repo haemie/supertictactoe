@@ -66,6 +66,8 @@ function Miniboard({
       style={{
         ...style,
         gridTemplate: `repeat(${miniState.length}, 1fr) / repeat(${miniState.length}, 1fr)`,
+        gap: `${2 / miniState.length}vw`,
+        padding: `${2 / miniState.length}vw`,
       }}
     >
       {boxLayoutMemo}
