@@ -71,12 +71,15 @@ export default function ChatRoom({ dimension }) {
       socket.on('chat message', (data) => {
         console.log('received message', data);
         setChatMessages((oldChat) => oldChat.concat([data]));
-        console.log(chatMessages);
       });
 
       return () => {
         socket.off('connect');
         socket.off('message');
+        socket.off('user has left');
+        socket.off('user has joined');
+        socket.off('current players');
+        socket.off('chat message');
       };
     }
   }, [socket]);
@@ -108,6 +111,7 @@ export default function ChatRoom({ dimension }) {
               <input type="submit" value="send" />
             </form>
           </div>
+          <input type="button" value="start" />
         </div>
       )}
     </div>
