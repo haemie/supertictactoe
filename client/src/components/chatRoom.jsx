@@ -40,6 +40,7 @@ export default function ChatRoom({ dimension }) {
     const formData = new FormData(e.target);
     const message = formData.get('message');
     socket.emit('chat message', message);
+    e.target.reset();
   }
 
   useEffect(() => {
