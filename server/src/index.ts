@@ -36,43 +36,53 @@ const io = new Server(server, {
 });
 
 type usersType = Record<string, string>;
+// track user id and display names
 const users: usersType = {};
 
 type gameRoomsType = {
-  [key: string]: Set<string>;
+  [key: string]: Map<string, string>;
 };
+// track users of every room
 const gameRooms: gameRoomsType = {};
 
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-  socket.on('join', (data) => {});
-  // console.log(users);
-
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
-  // socket.on('chat message', (message) => {
-  //   console.log('message', message);
-  //   socket.broadcast.emit('chat message', message);
-  // });
+  // disconnect from connected rooms when disconnecting
+  socket.on('disconnecting', (reason) => {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        gameRooms[room].delete(socket.id);
+        socket.to(room).emit('user has left', socket.id);
+      }
+    }
+  });
 
+  // joining room is done at the same time as joining the server
+  // save user in data structure as id: displayname
   socket.on('join room', (data) => {
     users[socket.id] = data.displayName;
-    console.log('user', data.displayName, 'trying to join room', data.room);
-    users[socket.id] = data.displayName;
+    console.log('user', users[socket.id], 'trying to join room', data.room);
+
+    // join room, add user to rooms data structure
     socket.join(data.room);
-    gameRooms[data.room]
-      ? gameRooms[data.room].add(socket.id)
-      : (gameRooms[data.room] = new Set([data.displayName]));
-    io.to(data.room).emit('message', `${data.displayName} has joined`);
-    socket.emit('current players', [...gameRooms[data.room]]);
+    if (gameRooms[data.room]) {
+      gameRooms[data.room].set(socket.id, data.displayName);
+    } else gameRooms[data.room] = new Map([[socket.id, data.displayName]]);
+
+    // inform other connected clients of new user
+    io.to(data.room).emit('user has joined', [socket.id, data.displayName]);
+
+    // inform new client of all players in room
+    socket.emit('current players', Object.fromEntries(gameRooms[data.room]));
+  });
+
+  socket.on('chat message', (message) => {
+    console.log('message', message);
+    io.emit('chat message', { sender: socket.id, message: message });
   });
 });
-
-// io.on('connection', (socket) => {
-//   socket.on('chat message', (msg) => {
-//     io.emit('chat message', msg);
-//   });
-// });
