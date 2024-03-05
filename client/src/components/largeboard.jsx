@@ -115,6 +115,7 @@ function Largeboard({
     currentPlayer,
     setCurrentPlayer,
     completeState,
+    turnCount,
   ]);
 
   /**
@@ -208,7 +209,7 @@ function Largeboard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onMouseMove={(e) => {
-          setFloaterPosition({ x: e.clientX - 15, y: e.clientY - 20 });
+          setFloaterPosition({ x: e.clientX, y: e.clientY });
         }}
         style={{
           gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
@@ -223,7 +224,7 @@ function Largeboard({
           className="floater"
           style={{
             color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
-            fontSize: '6vw',
+            fontSize: '3em',
             left: floaterPosition.x + 'px',
             top: floaterPosition.y + 'px',
           }}
