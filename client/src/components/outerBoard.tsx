@@ -1,20 +1,35 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import Miniboard from './miniboard';
-// import { oSVG, xSVG } from '../assets/SVG';
+import InnerBoard from './innerBoard';
 import {
   createInitialState,
   createInitialCompleteState,
-  createFilledMini,
-  createTiedMini,
+  createFilledInner,
+  createTiedInner,
 } from '../utility/gameConfig';
 import { checkWin } from '../utility/gameLogic';
 import JSConfetti from 'js-confetti';
-import PropTypes from 'prop-types';
-import LoadingAnimation from '../assets/loadingAni';
+import LoadingAnimation from '../assets/loadingAnimation';
 
 const jsConfetti = new JSConfetti();
 
-function Largeboard({
+type outerBoardPropTypes = {
+  restarting: boolean;
+  setRestarting: React.Dispatch<React.SetStateAction<boolean>>;
+  inputDimension: number;
+  winner: string | null;
+  setWinner: React.Dispatch<React.SetStateAction<string | null>>;
+  currentPlayer: string;
+  setCurrentPlayer: React.Dispatch<React.SetStateAction<string>>;
+  dimension: number;
+  setDimension: React.Dispatch<React.SetStateAction<number>>;
+};
+
+/**
+ * Renders Outer board, and holds data for the state of the game, including the inner boards and boxes within
+ * @param param0
+ * @returns
+ */
+function OuterBoard({
   restarting,
   setRestarting,
   inputDimension,
@@ -24,14 +39,16 @@ function Largeboard({
   setCurrentPlayer,
   dimension,
   setDimension,
-}) {
+}: outerBoardPropTypes) {
   let initialState = createInitialState(dimension);
   let initialCompleteState = createInitialCompleteState(dimension);
   const [completeState, setCompleteState] = useState(initialCompleteState);
   const [lbState, setLbState] = useState(initialState);
 
-  const [nextBoard, setNextBoard] = useState(null);
-  const [currentBoard, setCurrentBoard] = useState(null);
+  const [nextBoard, setNextBoard] = useState<[number, number] | null>(null);
+  const [currentBoard, setCurrentBoard] = useState<[number, number] | null>(
+    null
+  );
 
   const [turnCount, setTurnCount] = useState(0);
 
@@ -40,11 +57,11 @@ function Largeboard({
    */
   const mbLayoutMemo = useMemo(() => {
     /**
-     * function used by the miniboard to change the large board state when a mini board is won
+     * function used by the inner board to change the outer board state when an inner board is won
      * @param {*} row
      * @param {*} col
      */
-    function handleMiniWin(row, col, status) {
+    function handleInnerWin(row: number, col: number, status: string) {
       // status could be 'X', 'O', or 'draw'
       lbState[row][col] = status;
       setLbState([...lbState]);
@@ -52,12 +69,12 @@ function Largeboard({
 
     return lbState.map((row, i) =>
       row.map((marker, j) => {
-        // if the largeboard has a non null element, that means that space has been won by the marker or is tied
+        // if the outer board has a non null element, that means that space has been won by the marker or is tied
         if (marker) {
           if (marker === 'draw') {
-            return createTiedMini(completeState[i][j]);
+            return createTiedInner(completeState[i][j]);
           } else {
-            return createFilledMini(i, j, marker);
+            return createFilledInner(i, j, marker);
           }
         } else {
           // if no one has won yet, and either:
@@ -70,7 +87,7 @@ function Largeboard({
               (currentBoard && currentBoard[0] === i && currentBoard[1] === j))
           ) {
             return (
-              <Miniboard
+              <InnerBoard
                 style={{ backgroundColor: '#0268e6' }}
                 key={`mb${i}${j}`}
                 currentPlayer={currentPlayer}
@@ -79,16 +96,16 @@ function Largeboard({
                 turnCount={turnCount}
                 setTurnCount={setTurnCount}
                 focused={true}
-                handleWin={(status) => {
-                  handleMiniWin(i, j, status);
+                handleWin={(status: string) => {
+                  handleInnerWin(i, j, status);
                 }}
-                miniState={completeState[i][j]}
-                setMiniState={(newMiniState) => {
+                innerState={completeState[i][j]}
+                setInnerState={(newInnerState) => {
                   let newCompleteState = [...completeState];
-                  newCompleteState[i][j] = newMiniState;
+                  newCompleteState[i][j] = newInnerState;
                   setCompleteState(newCompleteState);
                 }}
-                miniKey={`mb${i}${j}`}
+                innerKey={`mb${i}${j}`}
               />
             );
           } else {
@@ -96,12 +113,12 @@ function Largeboard({
             // 1) someone has won
             // 2) another board is the designated currentBoard
             return (
-              <Miniboard
+              <InnerBoard
                 style={{ backgroundColor: '#7f7f7f' }}
                 key={`mb${i}${j}`}
                 focused={false}
-                miniState={completeState[i][j]}
-                miniKey={`mb${i}${j}`}
+                innerState={completeState[i][j]}
+                innerKey={`mb${i}${j}`}
               />
             );
           }
@@ -134,7 +151,7 @@ function Largeboard({
   }, [nextBoard, lbState]);
 
   /**
-   * check for winners whenever large board state updates
+   * check for winners whenever outer board state updates
    */
   useEffect(() => {
     const result = checkWin(lbState);
@@ -189,23 +206,25 @@ function Largeboard({
   /**
    * log time to reload, look to improve performance with caching
    */
-  const startRef = useRef(null);
-  const endRef = useRef(null);
+  const startRef = useRef<number | null>(null);
+  const endRef = useRef<number | null>(null);
   useEffect(() => {
     if (restarting) {
       startRef.current = performance.now();
     } else {
       endRef.current = performance.now();
-      console.log(
-        `rerender took ${(endRef.current - startRef.current) / 1000} seconds`
-      );
+      if (startRef.current) {
+        console.log(
+          `rerender took ${(endRef.current - startRef.current) / 1000} seconds`
+        );
+      }
     }
   }, [restarting]);
 
   return (
     <>
       <div
-        id="largeBoard"
+        id="outerBoard"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onMouseMove={(e) => {
@@ -236,16 +255,4 @@ function Largeboard({
   );
 }
 
-Largeboard.propTypes = {
-  restarting: PropTypes.bool.isRequired,
-  setRestarting: PropTypes.func.isRequired,
-  inputDimension: PropTypes.number.isRequired,
-  winner: PropTypes.string,
-  setWinner: PropTypes.func.isRequired,
-  currentPlayer: PropTypes.string.isRequired,
-  setCurrentPlayer: PropTypes.func.isRequired,
-  dimension: PropTypes.number.isRequired,
-  setDimension: PropTypes.func.isRequired,
-};
-
-export default Largeboard;
+export default OuterBoard;
