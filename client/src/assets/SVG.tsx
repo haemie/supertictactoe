@@ -1,0 +1,37 @@
+export const oSVG = (
+  <svg
+    version="1.1"
+    width="300"
+    height="200"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx={'50%'}
+      cy={'50%'}
+      r={'40%'}
+      stroke="blue"
+      fill="transparent"
+      strokeWidth={'10%'}
+    />
+  </svg>
+);
+export const xSVG = (
+  <svg>
+    <line
+      x1={'10%'}
+      x2={'90%'}
+      y1={'10%'}
+      y2={'90%'}
+      stroke="red"
+      strokeWidth={'10%'}
+    />
+    <line
+      x1={'10%'}
+      x2={'90%'}
+      y1={'90%'}
+      y2={'10%'}
+      stroke="red"
+      strokeWidth={'10%'}
+    />
+  </svg>
+);
