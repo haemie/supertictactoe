@@ -35,13 +35,13 @@ body {
   color: aliceblue;
 }
 
-#largeBoard button {
+#outerBoard button {
   background-color: black;
   /* color: aliceblue; */
   font-family: Arial, Helvetica, sans-serif;
 }
 
-#largeBoard {
+#outerBoard {
   background-color: clear;
   display:grid;
   width: 80vw;
@@ -53,7 +53,7 @@ body {
   position: relative;
 }
 
-.miniBoard {
+.innerBoard {
   justify-content: center;
   align-items: center;
   display:grid;
@@ -75,7 +75,7 @@ body {
   box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.164);
 }
 
-.filledMini {
+.filledInner {
   padding: 1vw;
   border-color: gray;
   border-style: solid;
