@@ -33,6 +33,8 @@ function Largeboard({
   const [nextBoard, setNextBoard] = useState(null);
   const [currentBoard, setCurrentBoard] = useState(null);
 
+  const [turnCount, setTurnCount] = useState(0);
+
   /**
    * memoized layout to prevent unnecessary rerenders and O(n^2) computation
    */
@@ -47,6 +49,7 @@ function Largeboard({
       lbState[row][col] = status;
       setLbState([...lbState]);
     }
+
     return lbState.map((row, i) =>
       row.map((marker, j) => {
         // if the largeboard has a non null element, that means that space has been won by the marker or is tied
@@ -73,6 +76,8 @@ function Largeboard({
                 currentPlayer={currentPlayer}
                 setCurrentPlayer={setCurrentPlayer}
                 setNextBoard={setNextBoard}
+                turnCount={turnCount}
+                setTurnCount={setTurnCount}
                 focused={true}
                 handleWin={(status) => {
                   handleMiniWin(i, j, status);
@@ -110,6 +115,7 @@ function Largeboard({
     currentPlayer,
     setCurrentPlayer,
     completeState,
+    turnCount,
   ]);
 
   /**
@@ -136,7 +142,7 @@ function Largeboard({
       setWinner(result);
       if (result === 'draw') {
         jsConfetti.addConfetti({
-          emojis: ['💀', '😭', '😞'],
+          emojis: ['💀', '😅'],
         });
       } else
         jsConfetti.addConfetti({
@@ -167,6 +173,7 @@ function Largeboard({
       setCurrentBoard(null);
       // showLoadingScreen = setTimeout(() => {
       setRestarting(false);
+      setTurnCount(0);
       // }, 1000);
     }
     // return () => clearTimeout(showLoadingScreen);
@@ -202,7 +209,7 @@ function Largeboard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onMouseMove={(e) => {
-          setFloaterPosition({ x: e.clientX - 15, y: e.clientY - 20 });
+          setFloaterPosition({ x: e.clientX, y: e.clientY });
         }}
         style={{
           gridTemplate: `repeat(${dimension}, 1fr) / repeat(${dimension}, 1fr)`,
@@ -217,7 +224,7 @@ function Largeboard({
           className="floater"
           style={{
             color: (winner || currentPlayer) === 'X' ? 'red' : 'blue',
-            fontSize: '6vw',
+            fontSize: '3em',
             left: floaterPosition.x + 'px',
             top: floaterPosition.y + 'px',
           }}

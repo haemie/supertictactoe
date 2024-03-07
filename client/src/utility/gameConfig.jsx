@@ -40,7 +40,7 @@ export const createTiedMini = (board) => {
     >
       {board.map((row, i) =>
         row.map((e, j) => (
-          <div key={`${i}${j}`} className="box">
+          <div key={`tiedbox${i}${j}`} className="box">
             {e === 'X' ? xSVG : oSVG}
           </div>
         ))
