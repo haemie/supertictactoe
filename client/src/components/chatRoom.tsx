@@ -1,23 +1,33 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, FormEvent } from 'react';
 import { WebSocketContext } from '../App';
 
-let displayName;
+let displayName: string | undefined;
 
-export default function ChatRoom({ dimension }) {
+type usersListType = { [socketId: string]: string };
+type chatMessageType = { sender: string; message: string };
+
+/**
+ * Holds logic for connecting to websocket server, seeing connected users, and sending/receiving messages
+ * @param param0
+ * @returns jsx div of chat box
+ */
+export default function ChatRoom({ dimension }: { dimension: number }) {
   const { socket, setSocket, io } = useContext(WebSocketContext);
   const [connected, setConnected] = useState(false);
-  const [userList, setUserList] = useState({});
-  const [chatMessages, setChatMessages] = useState([]);
+  const [userList, setUserList] = useState<usersListType>({});
+  const [chatMessages, setChatMessages] = useState<chatMessageType[]>([]);
 
-  function handleConnect(e) {
+  // try to connect user to websocket server when they press connect
+  function handleConnect(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    displayName = formData.get('displayName');
+    const formData = new FormData(e.currentTarget);
+    displayName = formData.get('displayName') as string;
 
     if (!connected) {
       const newSocket = io('http://localhost:8080/', { reconnection: false });
       newSocket.on('connect_error', (error) => {
         console.log('failed to connect to websocket server');
+        console.error(error);
       });
       newSocket.on('connect', () => {
         const roomName = `${dimension}x${dimension}`;
@@ -29,18 +39,19 @@ export default function ChatRoom({ dimension }) {
         setSocket(newSocket);
       });
     } else {
-      socket.disconnect();
+      socket?.disconnect();
       setConnected(false);
       setSocket(null);
     }
   }
 
-  function handleChat(e) {
+  // emit event when message is submitted
+  function handleChat(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.target);
+    const formData = new FormData(e.currentTarget);
     const message = formData.get('message');
-    socket.emit('chat message', message);
-    e.target.reset();
+    socket?.emit('chat message', message);
+    e.currentTarget.reset();
   }
 
   useEffect(() => {
@@ -57,19 +68,22 @@ export default function ChatRoom({ dimension }) {
         });
       });
 
-      socket.on('user has joined', ([socketid, displayName]) => {
-        setUserList((oldUserList) => ({
-          ...oldUserList,
-          [socketid]: displayName,
-        }));
+      socket.on(
+        'user has joined',
+        ([socketid, displayName]: [string, string]) => {
+          setUserList((oldUserList) => ({
+            ...oldUserList,
+            [socketid]: displayName,
+          }));
+        }
+      );
+
+      socket.on('current players', (users: usersListType) => {
+        console.log('current player data', users);
+        setUserList(users);
       });
 
-      socket.on('current players', (data) => {
-        console.log('current player data', data);
-        setUserList(data);
-      });
-
-      socket.on('chat message', (data) => {
+      socket.on('chat message', (data: chatMessageType) => {
         console.log('received message', data);
         setChatMessages((oldChat) => oldChat.concat([data]));
       });

@@ -1,8 +1,17 @@
-import PropTypes from 'prop-types';
-
 import { oSVG, xSVG } from '../assets/SVG';
 
-function Box({ marker, handleClick, testProp }) {
+type boxPropTypes = {
+  marker: string | null;
+  handleClick?: () => void;
+  testProp: string;
+};
+
+/**
+ * Button element that displays the marker it's passed, and performs actions on click if appropriate
+ * @param param0
+ * @returns
+ */
+function Box({ marker, handleClick, testProp }: boxPropTypes) {
   return (
     <button
       className="box"
@@ -14,11 +23,5 @@ function Box({ marker, handleClick, testProp }) {
     </button>
   );
 }
-
-Box.propTypes = {
-  marker: PropTypes.string,
-  handleClick: PropTypes.func,
-  testProp: PropTypes.string.isRequired,
-};
 
 export default Box;

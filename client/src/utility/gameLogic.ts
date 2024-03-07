@@ -4,13 +4,12 @@
  * @param {*} board
  * @returns winner marker, or undefined
  */
-
-export function checkWin(board) {
+export function checkWin(board: Array<Array<string | null>>) {
   const testSet = new Set();
   let nullCount = 0;
   for (let i = 0; i < board.length; i++) {
     // check rows
-    board[i].forEach((e) => {
+    board[i].forEach((e: string | null) => {
       if (e === null) nullCount += 1;
       testSet.add(e);
     });
@@ -19,21 +18,28 @@ export function checkWin(board) {
     }
     testSet.clear();
     // check columns
-    board.map((row) => row[i]).forEach((e) => testSet.add(e));
+    board
+      .map((row: Array<string | null>) => row[i])
+      .forEach((e: string | null) => testSet.add(e));
     if (testSet.size === 1 && board[0][i] !== null && board[0][i] !== 'draw') {
       return board[0][i];
     }
     testSet.clear();
   }
   // check top left to bottom right diagonal
-  board.map((row, index) => row[index]).forEach((e) => testSet.add(e));
+  board
+    .map((row: Array<string | null>, index: number) => row[index])
+    .forEach((e: string | null) => testSet.add(e));
   if (testSet.size === 1 && board[0][0] !== null && board[0][0] !== 'draw') {
     return board[0][0];
   }
   testSet.clear();
   // check top right to bottom left diagonal
   board
-    .map((row, index) => row[board.length - 1 - index])
+    .map(
+      (row: Array<string | null>, index: number) =>
+        row[board.length - 1 - index]
+    )
     .forEach((e) => testSet.add(e));
   if (
     testSet.size === 1 &&

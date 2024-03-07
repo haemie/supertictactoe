@@ -1,10 +1,21 @@
-import PropTypes from 'prop-types';
+import { SetStateAction } from 'react';
 
+type dimensionFormPropTypes = {
+  inputDimension: number;
+  setInputDimension: React.Dispatch<SetStateAction<number>>;
+  setRestarting: React.Dispatch<SetStateAction<boolean>>;
+};
+
+/**
+ * Form for setting the dimension of the game and restarting
+ * @param param0
+ * @returns
+ */
 export default function DimensionForm({
   inputDimension,
   setInputDimension,
   setRestarting,
-}) {
+}: dimensionFormPropTypes) {
   return (
     <form>
       <input
@@ -27,9 +38,3 @@ export default function DimensionForm({
     </form>
   );
 }
-
-DimensionForm.propTypes = {
-  inputDimension: PropTypes.number.isRequired,
-  setInputDimension: PropTypes.func.isRequired,
-  setRestarting: PropTypes.func.isRequired,
-};
