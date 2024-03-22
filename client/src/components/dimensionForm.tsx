@@ -17,7 +17,18 @@ export default function DimensionForm({
   setRestarting,
 }: dimensionFormPropTypes) {
   return (
-    <form>
+    <form id="dimensionForm">
+      <div id="dimensionInputWrapper">
+        Dimension
+        <input
+          id="dimensionInput"
+          data-test="dimension-input"
+          value={inputDimension}
+          onChange={(e) => {
+            setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
+          }}
+        />
+      </div>
       <input
         type="submit"
         value="Restart!"
@@ -25,14 +36,6 @@ export default function DimensionForm({
         onClick={(e) => {
           e.preventDefault();
           setRestarting(true);
-        }}
-      />
-      <input
-        id="dimensionInput"
-        data-test="dimension-input"
-        value={inputDimension}
-        onChange={(e) => {
-          setInputDimension(Number(e.target.value)); // inputs are strings, MUST convert it into a number
         }}
       />
     </form>

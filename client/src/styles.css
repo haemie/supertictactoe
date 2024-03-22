@@ -35,6 +35,16 @@ body {
   color: aliceblue;
 }
 
+#dimensionForm {
+  display: flex;
+  flex-flow: row;
+}
+
+#dimensionInputWrapper {
+  display: flex;
+  flex-flow: column;
+}
+
 #outerBoard button {
   background-color: black;
   /* color: aliceblue; */
@@ -44,10 +54,10 @@ body {
 #outerBoard {
   background-color: clear;
   display:grid;
-  width: 80vw;
-  height: 80vw;
-  max-width: 80vh;
-  max-height: 80vh;
+  width: 70vw;
+  height: 70vw;
+  max-width: 70vh;
+  max-height: 70vh;
   margin-bottom: 1rem;
   overflow: hidden;
   position: relative;
