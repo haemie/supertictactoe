@@ -17,6 +17,8 @@
 Tic tac toe, where each move determines the next player's move. See this [VSauce video](https://www.youtube.com/shorts/_Na3a1ZrX7c) for full ruleset.
 The game state is currently handled on the frontend. Backend is planned to hold its own instance of game state, and will receive each player's move, validate the move, and then send it to the next player.
 
+Currently deployed to https://haemie.github.io/supertictactoe/
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Frontend Built With
