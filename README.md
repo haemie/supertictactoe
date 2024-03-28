@@ -26,7 +26,7 @@ Currently deployed to https://haemie.github.io/supertictactoe/
 - React
 - Vite
 
-- ### Backend Built With
+### Backend Built With
 
 - Express
 - Socket.io
